@@ -1,0 +1,4 @@
+"0",""
+"0",""
+"0","# Add the new fitted line to the scatter plot using the abline function with the lty argument."
+"0","abline(model_without_outliers, col = ""blue"", lty = 2)"

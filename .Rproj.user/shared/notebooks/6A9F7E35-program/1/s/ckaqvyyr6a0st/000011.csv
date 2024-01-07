@@ -1,0 +1,3 @@
+"0",""
+"0","# Add the regression line to the scatter plot using the lines function."
+"0","abline(model, col = ""red"")"

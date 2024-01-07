@@ -1,0 +1,2 @@
+"0","# Visualize the residuals of the new model using the plot function with the resid argument."
+"0","plot(model_without_outliers, which = 1, main = ""Residual plot without outliers"")"

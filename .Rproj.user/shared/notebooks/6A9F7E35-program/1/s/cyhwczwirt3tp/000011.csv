@@ -1,0 +1,4 @@
+"0","# Identify the outliers using the identify function, allowing us to click on points and see their indices."
+"0","identify(x, y)"
+"1","integer(0)
+"

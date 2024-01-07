@@ -1,0 +1,2 @@
+"0","# Visualize the residuals using the plot function with the resid argument."
+"0","plot(model, which = 1, main = ""Residual plot"")"

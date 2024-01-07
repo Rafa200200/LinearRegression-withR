@@ -1,0 +1,2 @@
+"0","model_without_outliers <- lm(y ~ x, data = data.frame(x, y)[-c(8, 19, 20), ])"
+"0","plot(x, y, main = ""Scatter plot of the data"", xlab = ""x"", ylab = ""y"")"

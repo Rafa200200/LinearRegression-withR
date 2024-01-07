@@ -1,0 +1,118 @@
+---
+title: "AP1 - Simple Linear Regression"
+output:
+  html_document: 
+    self_contained: false
+author: "Rafael Lourenço"
+---
+
+
+```{r}
+# First, let's create some fictitious data to illustrate the concept of simple linear regression.
+# Suppose we have an independent variable x and a dependent variable y.
+# Generate 20 random values for x between 0 and 10.
+set.seed(123) # to ensure reproducibility of results
+x <- runif(20, 0, 10)
+
+# Generate 20 values for y using a linear function with a slope of 2 and an intercept of 5, plus some random noise.
+y <- 2 * x + 5 + rnorm(20, 0, 1)
+
+# Now, let's plot the data on a scatter plot.
+plot(x, y, main = "Scatter plot of the data", xlab = "x", ylab = "y")
+```
+
+We can observe a positive linear trend in the data, y increases as x increases.
+
+```{r}
+# Let's try fitting a straight line to the data using the lm function (linear model).
+# The formula is y ~ x, meaning that y is explained by x.
+model <- lm(y ~ x)
+
+# View the results of the model using the summary function.
+summary(model)
+```
+The output provides various information about the model, such as:
+
+-Call: the lm function call used to fit the model.
+
+-Residuals: the model residuals, which are the differences between observed y values and model-predicted values.
+
+-Coefficients: the model coefficients, including the intercept and slope of the linear line.
+
+-Multiple R-squared: the coefficient of determination, indicating the proportion of y variance explained by the model.
+
+-Adjusted R-squared: a version adjusted for the number of variables and observations in the model.
+
+-F-statistic: a statistic used to test the null hypothesis that all coefficients are zero.
+
+-p-value: the probability of obtaining an F-statistic as extreme or more extreme if the null hypothesis were true
+
+```{r}
+# Extract coefficients
+intercept <- coef(model)[1]
+slope <- coef(model)[2]
+
+plot(x, y, main = "Scatter plot of the data", xlab = "x", ylab = "y")
+
+# Add the regression line to the scatter plot using the lines function.
+abline(model, col = "red")
+```
+
+We can see that the straight line fits well to the data, but there are some points that are further from the line than others.
+
+```{r}
+# Visualize the residuals using the plot function with the resid argument.
+plot(model, which = 1, main = "Residual plot")
+# Identify the outliers using the identify function, allowing us to click on points and see their indices.
+identify(x, y)
+```
+
+The output shows a plot of residuals against fitted values. 
+
+There are some points that deviate more from the horizontal line than others.
+
+These points are outliers, points that do not follow the general data pattern.
+
+We can see that the indices of the outliers are 8, 19 and 20.
+
+```{r}
+# Remove the outliers from the model using negative indexing.
+model_without_outliers <- lm(y ~ x, data = data.frame(x, y)[-c(8, 19, 20), ])
+
+# View the results of the new model using the summary function.
+summary(model_without_outliers)
+```
+The output shows that the coefficients of the new model are slightly different from the original model.
+
+R-squared and adjusted R-squared have increased, indicating a better fit without outliers.
+
+The F-statistic and p-value have also increased, indicating a stronger linear relationship between x and y without outliers.
+
+
+```{r}
+model_without_outliers <- lm(y ~ x, data = data.frame(x, y)[-c(8, 19, 20), ])
+plot(x, y, main = "Scatter plot of the data", xlab = "x", ylab = "y")
+abline(model, col = "red")
+
+
+# Add the new fitted line to the scatter plot using the abline function with the lty argument.
+abline(model_without_outliers, col = "blue", lty = 2)
+```
+
+We can see that the new line is closer to the points than the original line, except for the outliers.
+
+
+
+```{r}
+# Visualize the residuals of the new model using the plot function with the resid argument.
+plot(model_without_outliers, which = 1, main = "Residual plot without outliers")
+```
+
+
+The output shows that the residuals of the new model have a more normal distribution and constant variance than the residuals of the original model. 
+
+There are no more outliers, as they have been removed from the model.
+
+
+
+

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Rafael Lourenço" />
+
+
+<title>AP1 - Simple Linear Regression</title>
+
+<script src="program_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="program_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="program_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="program_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="program_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="program_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="program_files/navigation-1.1/tabsets.js"></script>
+<link href="program_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="program_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">AP1 - Simple Linear Regression</h1>
+<h4 class="author">Rafael Lourenço</h4>
+
+</div>
+
+
+<pre class="r"><code># First, let&#39;s create some fictitious data to illustrate the concept of simple linear regression.
+# Suppose we have an independent variable x and a dependent variable y.
+# Generate 20 random values for x between 0 and 10.
+set.seed(123) # to ensure reproducibility of results
+x &lt;- runif(20, 0, 10)
+
+# Generate 20 values for y using a linear function with a slope of 2 and an intercept of 5, plus some random noise.
+y &lt;- 2 * x + 5 + rnorm(20, 0, 1)
+
+# Now, let&#39;s plot the data on a scatter plot.
+plot(x, y, main = &quot;Scatter plot of the data&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;)</code></pre>
+<p><img src="program_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>We can observe a positive linear trend in the data, y increases as x
+increases.</p>
+<pre class="r"><code># Let&#39;s try fitting a straight line to the data using the lm function (linear model).
+# The formula is y ~ x, meaning that y is explained by x.
+model &lt;- lm(y ~ x)
+
+# View the results of the model using the summary function.
+summary(model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.40947 -0.63201 -0.08684  0.68662  1.89260 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  5.61628    0.43830   12.81 1.74e-10 ***
+## x            1.86851    0.06959   26.85 5.66e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.9508 on 18 degrees of freedom
+## Multiple R-squared:  0.9756, Adjusted R-squared:  0.9743 
+## F-statistic:   721 on 1 and 18 DF,  p-value: 5.657e-16</code></pre>
+<p>The output provides various information about the model, such as:</p>
+<p>-Call: the lm function call used to fit the model.</p>
+<p>-Residuals: the model residuals, which are the differences between
+observed y values and model-predicted values.</p>
+<p>-Coefficients: the model coefficients, including the intercept and
+slope of the linear line.</p>
+<p>-Multiple R-squared: the coefficient of determination, indicating the
+proportion of y variance explained by the model.</p>
+<p>-Adjusted R-squared: a version adjusted for the number of variables
+and observations in the model.</p>
+<p>-F-statistic: a statistic used to test the null hypothesis that all
+coefficients are zero.</p>
+<p>-p-value: the probability of obtaining an F-statistic as extreme or
+more extreme if the null hypothesis were true</p>
+<pre class="r"><code># Extract coefficients
+intercept &lt;- coef(model)[1]
+slope &lt;- coef(model)[2]
+
+plot(x, y, main = &quot;Scatter plot of the data&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;)
+
+# Add the regression line to the scatter plot using the lines function.
+abline(model, col = &quot;red&quot;)</code></pre>
+<p><img src="program_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We can see that the straight line fits well to the data, but there
+are some points that are further from the line than others.</p>
+<pre class="r"><code># Visualize the residuals using the plot function with the resid argument.
+plot(model, which = 1, main = &quot;Residual plot&quot;)
+# Identify the outliers using the identify function, allowing us to click on points and see their indices.
+identify(x, y)</code></pre>
+<p><img src="program_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre><code>## integer(0)</code></pre>
+<p>The output shows a plot of residuals against fitted values.</p>
+<p>There are some points that deviate more from the horizontal line than
+others.</p>
+<p>These points are outliers, points that do not follow the general data
+pattern.</p>
+<p>We can see that the indices of the outliers are 8, 19 and 20.</p>
+<pre class="r"><code># Remove the outliers from the model using negative indexing.
+model_without_outliers &lt;- lm(y ~ x, data = data.frame(x, y)[-c(8, 19, 20), ])
+
+# View the results of the new model using the summary function.
+summary(model_without_outliers)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x, data = data.frame(x, y)[-c(8, 19, 20), ])
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.3066 -0.6226  0.1675  0.7376  1.0091 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  5.85425    0.37068   15.79 9.36e-11 ***
+## x            1.83226    0.06178   29.66 9.85e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.7621 on 15 degrees of freedom
+## Multiple R-squared:  0.9832, Adjusted R-squared:  0.9821 
+## F-statistic: 879.6 on 1 and 15 DF,  p-value: 9.851e-15</code></pre>
+<p>The output shows that the coefficients of the new model are slightly
+different from the original model.</p>
+<p>R-squared and adjusted R-squared have increased, indicating a better
+fit without outliers.</p>
+<p>The F-statistic and p-value have also increased, indicating a
+stronger linear relationship between x and y without outliers.</p>
+<pre class="r"><code>model_without_outliers &lt;- lm(y ~ x, data = data.frame(x, y)[-c(8, 19, 20), ])
+plot(x, y, main = &quot;Scatter plot of the data&quot;, xlab = &quot;x&quot;, ylab = &quot;y&quot;)
+abline(model, col = &quot;red&quot;)
+
+
+# Add the new fitted line to the scatter plot using the abline function with the lty argument.
+abline(model_without_outliers, col = &quot;blue&quot;, lty = 2)</code></pre>
+<p><img src="program_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>We can see that the new line is closer to the points than the
+original line, except for the outliers.</p>
+<pre class="r"><code># Visualize the residuals of the new model using the plot function with the resid argument.
+plot(model_without_outliers, which = 1, main = &quot;Residual plot without outliers&quot;)</code></pre>
+<p><img src="program_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>The output shows that the residuals of the new model have a more
+normal distribution and constant variance than the residuals of the
+original model.</p>
+<p>There are no more outliers, as they have been removed from the
+model.</p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
